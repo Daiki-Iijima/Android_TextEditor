@@ -2,6 +2,7 @@ package com.example.memoapp
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothClass
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Debug
@@ -13,6 +14,12 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.core.text.toHtml
 import androidx.core.widget.doAfterTextChanged
+import android.widget.Toast
+
+import android.widget.CompoundButton
+
+
+
 
 class MainActivity : AppCompatActivity() {
     @SuppressLint("WrongViewCast")
@@ -27,10 +34,18 @@ class MainActivity : AppCompatActivity() {
         val spaceCountToggle = findViewById<Switch>(R.id.spaceCountToggle);
         val countText = findViewById<TextView>(R.id.CountTextView);
         val flagText = findViewById<TextView>(R.id.FlagText);
+        val closeBtn = findViewById<Button>(R.id.CloseBtn);
 
         //  検索ボタンクリックイベント
         serchBtn.setOnClickListener {
             t.setText(Html.fromHtml(Serch(t.text.toString(),serchStringText.text.toString())));
+        }
+
+        //  閉じるボタン押下時イベント
+        closeBtn.setOnClickListener{
+            val intent = Intent(this, ListView::class.java)
+            //intent.putExtra("KEY", t.text);//第一引数key、第二引数渡したい値
+            startActivity(intent)
         }
 
         //  テキストの変更イベントの監視
@@ -43,6 +58,18 @@ class MainActivity : AppCompatActivity() {
             };
 
             flagText.text = text?.count().toString();
+        }
+
+        spaceCountToggle.setOnCheckedChangeListener { _, isChecked -> // 表示する文字列をスイッチのオンオフで変える
+
+            // オンなら
+            if (isChecked) {
+                Log.d("","ON")
+            } else {
+                Log.d("","OFF")
+            }
+            val toast = Toast.makeText(this@MainActivity, "", Toast.LENGTH_SHORT)
+            toast.show()
         }
     }
 
@@ -59,7 +86,6 @@ class MainActivity : AppCompatActivity() {
     fun StringCount(targetEditable: Editable,spaceFlag: Boolean):Int
     {
         var retInt = 0;
-
 
         if(spaceFlag)
         {
