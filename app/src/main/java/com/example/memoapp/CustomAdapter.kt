@@ -1,11 +1,9 @@
 package com.example.memoapp
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scrollviewpractice.Data
 
@@ -14,7 +12,7 @@ class CustomAdapter(private  val dataList: ArrayList<Data>):RecyclerView.Adapter
     //  Viewの初期化
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
     {
-        val btn: Button = view.findViewById(R.id.contentBtn);
+        val btn: Button = view.findViewById(R.id.AddDataBtn);
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {

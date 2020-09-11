@@ -1,11 +1,9 @@
 package com.example.memoapp
 
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothClass
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Debug
 import android.text.Editable
 import android.text.Html
 import android.util.Log
@@ -16,10 +14,6 @@ import androidx.core.text.toHtml
 import androidx.core.widget.doAfterTextChanged
 import android.widget.Toast
 
-import android.widget.CompoundButton
-
-
-
 
 class MainActivity : AppCompatActivity() {
     @SuppressLint("WrongViewCast")
@@ -28,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //  レイアウト内のWidgetを取得
+        val titleText = findViewById<TextView>(R.id.TitleText)
         var t = findViewById<TextView>(R.id.mainInputField);
         val serchBtn = findViewById<Button>(R.id.SerchBtn);
         val serchStringText = findViewById<TextView>(R.id.SerchWordText);
@@ -44,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         //  閉じるボタン押下時イベント
         closeBtn.setOnClickListener{
             val intent = Intent(this, ListView::class.java)
-            //intent.putExtra("KEY", t.text);//第一引数key、第二引数渡したい値
+            intent.putExtra("KEY", titleText.text.toString());//第一引数key、第二引数渡したい値
             startActivity(intent)
         }
 
