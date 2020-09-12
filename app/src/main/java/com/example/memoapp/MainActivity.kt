@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         //  レイアウト内のWidgetを取得
         val titleText = findViewById<TextView>(R.id.TitleText)
-        var t = findViewById<TextView>(R.id.mainInputField);
+        var contentText = findViewById<TextView>(R.id.mainInputField);
         val serchBtn = findViewById<Button>(R.id.SerchBtn);
         val serchStringText = findViewById<TextView>(R.id.SerchWordText);
         val spaceCountToggle = findViewById<Switch>(R.id.spaceCountToggle);
@@ -31,20 +31,24 @@ class MainActivity : AppCompatActivity() {
         val flagText = findViewById<TextView>(R.id.FlagText);
         val closeBtn = findViewById<Button>(R.id.CloseBtn);
 
+
+
         //  検索ボタンクリックイベント
         serchBtn.setOnClickListener {
-            t.setText(Html.fromHtml(Serch(t.text.toString(),serchStringText.text.toString())));
+            contentText.setText(Html.fromHtml(Serch(contentText.text.toString(),serchStringText.text.toString())));
         }
 
         //  閉じるボタン押下時イベント
         closeBtn.setOnClickListener{
             val intent = Intent(this, ListView::class.java)
-            intent.putExtra("KEY", titleText.text.toString());//第一引数key、第二引数渡したい値
+            intent.putExtra("KEY_TITLE", titleText.text.toString());//第一引数key、第二引数渡したい値
+            intent.putExtra("KEY_CONTENT", contentText.text.toString());//第一引数key、第二引数渡したい値
+
             startActivity(intent)
         }
 
         //  テキストの変更イベントの監視
-        t.doAfterTextChanged { text ->
+        contentText.doAfterTextChanged { text ->
 
             if(text != null)
                 countText.text = StringCount(text,spaceCountToggle.isChecked).toString();
@@ -66,6 +70,12 @@ class MainActivity : AppCompatActivity() {
             val toast = Toast.makeText(this@MainActivity, "", Toast.LENGTH_SHORT)
             toast.show()
         }
+
+        //  データの受け取り
+        var tText = intent.getStringExtra("KEY_TITLE") ?: return
+        var cText = intent.getStringExtra("KEY_CONTENT") ?: return
+        titleText.text = tText
+        contentText.text = cText
     }
 
     //  文字列を検索して、対象の文字列の色を変更した文字列を返す

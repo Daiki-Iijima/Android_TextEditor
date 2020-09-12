@@ -51,13 +51,14 @@ class ListView : AppCompatActivity() {
 
 
         //  入力用アクティブティからのデータの受け取り & ヌルチェック
-        var text = intent.getStringExtra("KEY") ?: return
+        var titleText = intent.getStringExtra("KEY_TITLE") ?: return
+        var contentText = intent.getStringExtra("KEY_CONTENT") ?: return
 
-        Log.d("受信した値", text)
-
-        text += "\n"
+        Log.d("受信した値", titleText)
+        //  改行文字を追加してデータを分割
+        titleText += ":"+contentText+"\n"
         //  内部ストレージにデータを保存
-        dataManager.saveFile(this, fileName, text)
+        dataManager.saveFile(this, fileName, titleText)
 
         //  内部ストレージのデータを読み込み
         val readText = dataManager.readFile(this, fileName).readText()
@@ -68,14 +69,26 @@ class ListView : AppCompatActivity() {
         var mDataList = ArrayList<Data>();
         for (data in dataList) {
             if (data == "") continue
-            mDataList.add(Data(data, { data }))
+
+            //  データをタイトルと中身に分割
+            val splitData = data.split(":")
+            val title = splitData[0]
+            val content = splitData[1]
+
+            mDataList.add(Data(title) {  //  クリック時のイベント
+                //  画面遷移
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("KEY_TITLE", title);//第一引数key、第二引数渡したい値
+                intent.putExtra("KEY_CONTENT", content);//第一引数key、第二引数渡したい値
+                startActivity(intent)
+            })
         }
 
         UpdateListView(mDataList)
 
     }
 
-
+    //  レイアウト更新S
     private fun UpdateListView(dataList: ArrayList<Data>)
     {
         // RecyclerViewの取得
