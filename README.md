@@ -1,4 +1,4 @@
-# Android_TextEditor
+# Android TextEditor
 Kotlin勉強用に作成しているテキストエディター
 
 ## 主要な機能
