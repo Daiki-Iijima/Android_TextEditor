@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.core.text.toHtml
 import androidx.core.widget.doAfterTextChanged
 import android.widget.Toast
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +32,8 @@ class MainActivity : AppCompatActivity() {
         val flagText = findViewById<TextView>(R.id.FlagText);
         val closeBtn = findViewById<Button>(R.id.CloseBtn);
 
-
+        //  テキストデータのID
+        var idText:String = "";
 
         //  検索ボタンクリックイベント
         serchBtn.setOnClickListener {
@@ -41,8 +43,11 @@ class MainActivity : AppCompatActivity() {
         //  閉じるボタン押下時イベント
         closeBtn.setOnClickListener{
             val intent = Intent(this, ListView::class.java)
-            intent.putExtra("KEY_TITLE", titleText.text.toString());//第一引数key、第二引数渡したい値
-            intent.putExtra("KEY_CONTENT", contentText.text.toString());//第一引数key、第二引数渡したい値
+            intent.putExtra("KEY_TITLE", titleText.text.toString());        //第一引数key、第二引数渡したい値
+            intent.putExtra("KEY_CONTENT", contentText.text.toString());    //第一引数key、第二引数渡したい値
+            intent.putExtra("KEY_ID",idText)                            //第一引数key、第二引数渡したい値
+
+            Log.d("これはIDです",idText);
 
             startActivity(intent)
         }
@@ -74,6 +79,18 @@ class MainActivity : AppCompatActivity() {
         //  データの受け取り
         var tText = intent.getStringExtra("KEY_TITLE") ?: return
         var cText = intent.getStringExtra("KEY_CONTENT") ?: return
+        idText = intent.getStringExtra("KEY_ID")?: ""
+
+        //  idが設定されていない場合
+        if(idText == "")
+        {
+            idText = UUID.randomUUID().toString()
+            Log.d("IDが設定されていませんでした",idText)
+        }else
+        {
+            Log.d("IDあり",idText)
+        }
+
         titleText.text = tText
         contentText.text = cText
     }

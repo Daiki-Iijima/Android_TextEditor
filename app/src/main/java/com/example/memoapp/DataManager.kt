@@ -17,6 +17,12 @@ class DataManager {
     // 読み出し処理
     public fun readFile(applicationContext: Context,file: String): BufferedReader {
         val readFile = File(applicationContext.filesDir, file)
+
+        //  ファイルが存在するか確認
+        if(!readFile.exists()){
+            readFile.writeText("")
+        }
+
         return readFile.bufferedReader()
     }
 

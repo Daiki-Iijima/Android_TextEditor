@@ -36,6 +36,9 @@ class ListView : AppCompatActivity() {
         createMemoBtn.setOnClickListener {
             //  画面遷移
             val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("KEY_ID", "");//第一引数key、第二引数渡したい値
+            intent.putExtra("KEY_TITLE", "");//第一引数key、第二引数渡したい値
+            intent.putExtra("KEY_CONTENT", "");//第一引数key、第二引数渡したい値
             startActivity(intent)
         }
 
@@ -51,18 +54,67 @@ class ListView : AppCompatActivity() {
 
 
         //  入力用アクティブティからのデータの受け取り & ヌルチェック
+        val idStr = intent.getStringExtra("KEY_ID")?: return
         var titleText = intent.getStringExtra("KEY_TITLE") ?: return
         var contentText = intent.getStringExtra("KEY_CONTENT") ?: return
 
-        Log.d("受信した値", titleText)
         //  改行文字を追加してデータを分割
-        titleText += ":"+contentText+"\n"
-        //  内部ストレージにデータを保存
-        dataManager.saveFile(this, fileName, titleText)
+        var ssText = "";
+        ssText+= idStr+":"+titleText+":"+contentText+"#$%"
+
+
+        //  すでにデータが保存されているか確認
+        var flag = false
+            //  内部ストレージのデータを読み込み
+            val read = dataManager.readFile(this, fileName).readText()
+            val dList = read.split("#$%")
+
+        var saveData = ""
+
+        for (data in dList) {
+
+            var saved = ""
+            saved = data
+            //  データをタイトルと中身に分割
+            val splitData = data.split(":")
+
+            var id =""
+            var title = ""
+            var content = ""
+
+            if(splitData.size>2) {
+                id = splitData[0]
+                title = splitData[1]
+                content = splitData[2]
+            }
+
+            //  同一idの場合
+            if (id == idStr) {
+                title = titleText
+                content = contentText
+
+                saved = id +":"+title+":"+content;
+                flag = true
+                Log.d("同一ID", id)
+            }
+
+            saveData+=saved+"#$%"
+        }
+
+
+        if(!flag) {
+            //  内部ストレージにデータを保存
+            dataManager.saveFile(this, fileName, ssText)
+        }else
+        {
+            dataManager.deleteFile(this,fileName);
+            //  内部ストレージにデータを保存
+            dataManager.saveFile(this, fileName, saveData)
+        }
 
         //  内部ストレージのデータを読み込み
         val readText = dataManager.readFile(this, fileName).readText()
-        val dataList = readText.split("\n")
+        val dataList = readText.split("#$%")
 
         Log.d("LoadFile", readText)
 
@@ -72,12 +124,25 @@ class ListView : AppCompatActivity() {
 
             //  データをタイトルと中身に分割
             val splitData = data.split(":")
-            val title = splitData[0]
-            val content = splitData[1]
+
+            var id =""
+            var title = ""
+            var content = ""
+
+            if(splitData.size>2) {
+                id = splitData[0]
+                title = splitData[1]
+                content = splitData[2]
+            }
+
+            if(splitData.size ==1)
+                title = splitData[0]
+
 
             mDataList.add(Data(title) {  //  クリック時のイベント
                 //  画面遷移
                 val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("KEY_ID", id);//第一引数key、第二引数渡したい値
                 intent.putExtra("KEY_TITLE", title);//第一引数key、第二引数渡したい値
                 intent.putExtra("KEY_CONTENT", content);//第一引数key、第二引数渡したい値
                 startActivity(intent)
